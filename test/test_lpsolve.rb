@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # $Id: test_lpsolve.rb,v 1.13 2007/03/28 11:48:01 rocky Exp $
-require 'test/unit'
-require 'rubygems'
+require 'minitest/autorun'
 
 # require 'ruby-debug' ; Debugger.start
 
@@ -41,7 +40,7 @@ def compare_files(file_correct, file_check_against, max_line=0, filter=nil)
   return true
 end
 
-class TestLPSolve < Test::Unit::TestCase
+class TestLPSolve < Minitest::Test
   def setup
     @lp = LPSolve.new(0, 4)
   end
