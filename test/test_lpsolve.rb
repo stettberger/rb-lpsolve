@@ -357,9 +357,6 @@ class TestLPSolve < Minitest::Test
            [lp.time_total, lp.time_elapsed]))
 
     filter = Proc.new{|got_lines, correct_lines|
-      [got_lines,correct_lines].flatten.each do |s|
-        s.sub!(/MEMO: lp_solve version.*/,'MEMO: lp_solve version XXX')
-      end
       [got_lines[14]].flatten.each do |s|
         s.sub!(/\|\|[*]\|\| = .+/, '||*|| = 0') if s
       end
@@ -387,19 +384,14 @@ class TestLPSolve < Minitest::Test
   def test_read_MPS
     # Check invalid parameter type. Should be a string.
     assert_equal(nil, LPSolve.read_MPS(5, LPSolve::IMPORTANT))
-
+    
     lp = LPSolve.read_MPS("../example/model.mps", LPSolve::IMPORTANT)
     assert_equal(LPSolve, lp.class)
     lp.set_outputfile("mps_model.out")
     lp.set_verbose(LPSolve::NORMAL)
     lp.set_lp_name("MPS model")
     lp.solve
-    filter = Proc.new{|got_lines, correct_lines|
-      [got_lines,correct_lines].flatten.each do |s|
-        s.sub!(/MEMO: lp_solve version.*/,'MEMO: lp_solve version XXX')
-      end
-    }
-    assert compare_files("mps_model.right", "mps_model.out", 23, filter)
+    assert compare_files("mps_model.right", "mps_model.out", 23)
     assert_in_delta(0.0, lp.variables[0], 0.0001)
     assert_in_delta(0.0, lp.variables[1], 0.0001)
     assert_equal([143.0, 120.0, 110.0, 1.0], lp.get_column(1))
