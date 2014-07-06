@@ -17,10 +17,16 @@ def compare_files(file_correct, file_check_against, max_line=0, filter=nil)
   correct = File.new(file_correct)
   correct_lines = correct.readlines
   filter.call(got_lines, correct_lines) if filter
+  version_regexp = /lp_solve version ([^ ]+)/
 
   correct_lines.each_with_index do |line, lineno|
     begin
       break if max_line > 0 && lineno >= max_line - 1
+      next if (
+        (got_match = got_lines[lineno].match(version_regexp)) &&
+        (correct_match = correct_lines[lineno].match(version_regexp))
+      )
+
       if got_lines[lineno] != correct_lines[lineno]
         puts "At line #{lineno}, we expected:"
         puts correct_lines[lineno]
